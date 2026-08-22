@@ -1,12 +1,24 @@
-import '@mantine/core/styles.css';
 
-import { MantineProvider } from '@mantine/core';
-import { Button } from '@mantine/core';
+import "@mantine/core/styles.css";
+import "./index.css"
+
+import { BrowserRouter, Route, Routes } from "react-router";
+import { MantineProvider } from "@mantine/core";
+import { AuthLayout } from "./pages/auth/AuthLayout";
+import { LoginPage } from "./pages/auth/LoginPage";
+import { RegisterPage } from "./pages/auth/RegisterPage";
 
 export default function App() {
-  return <MantineProvider>
-    <Button variant="filled" size="md" radius="lg">
-      Button
-    </Button>
-  </MantineProvider>;
+	return (
+		<MantineProvider>
+			<BrowserRouter>
+				<Routes>
+					<Route path="/auth" element={<AuthLayout />}  >
+						<Route path="login" element={<LoginPage />} />
+						<Route path="register" element={<RegisterPage />} />
+					</Route>
+				</Routes>
+			</BrowserRouter>
+		</MantineProvider>
+	);
 }

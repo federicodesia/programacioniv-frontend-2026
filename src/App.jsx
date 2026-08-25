@@ -7,6 +7,7 @@ import { MantineProvider } from "@mantine/core";
 import { AuthLayout } from "./pages/auth/AuthLayout";
 import { LoginPage } from "./pages/auth/LoginPage";
 import { RegisterPage } from "./pages/auth/RegisterPage";
+import { NotFoundPage } from "./pages/NotFoundPage";
 
 export default function App() {
 	return (
@@ -17,6 +18,8 @@ export default function App() {
 						<Route path="login" element={<LoginPage />} />
 						<Route path="register" element={<RegisterPage />} />
 					</Route>
+
+					<Route path="*" element={<NotFoundPage />} />
 				</Routes>
 			</BrowserRouter>
 		</MantineProvider>

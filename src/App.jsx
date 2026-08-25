@@ -8,6 +8,7 @@ import { AuthLayout } from "./pages/auth/AuthLayout";
 import { LoginPage } from "./pages/auth/LoginPage";
 import { RegisterPage } from "./pages/auth/RegisterPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
+import { HomePage } from "./pages/HomePage";
 
 export default function App() {
 	return (
@@ -18,6 +19,8 @@ export default function App() {
 						<Route path="login" element={<LoginPage />} />
 						<Route path="register" element={<RegisterPage />} />
 					</Route>
+
+					<Route path="/home" element={<HomePage />} />
 
 					<Route path="*" element={<NotFoundPage />} />
 				</Routes>

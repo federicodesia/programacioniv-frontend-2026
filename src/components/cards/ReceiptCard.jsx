@@ -1,3 +1,4 @@
+import { useDisclosure } from '@mantine/hooks';
 import { Card, Image, Text, Badge, Button, Flex, Menu } from '@mantine/core';
 import { IconDotsVertical, IconPencilMinus, IconTrash } from '@tabler/icons-react';
 import { NewEditReceiptModal } from '../modals/NewEditReceiptModal';
@@ -31,38 +32,43 @@ export function ReceiptCard() {
 }
 
 function ActionsMenu() {
+    const [opened, { open, close }] = useDisclosure(false);
+
     return (
-        <Menu shadow="md" width={200}>
-            <Menu.Target style={{
-                position: "absolute",
-                top: "12px",
-                right: "12px"
-            }} >
-                <Button variant="transparent">
-                    <IconDotsVertical size={18} />
-                </Button>
-            </Menu.Target>
+        <>
+            <NewEditReceiptModal
+                action="edit"
+                opened={opened}
+                onClose={close}
+            />
 
-            <Menu.Dropdown>
-                <NewEditReceiptModal
-                    action="edit"
-                    button={(open) =>
-                        <Menu.Item
-                            leftSection={<IconPencilMinus size={14} />}
-                            onClick={open}
-                        >
-                            Editar
-                        </Menu.Item>
-                    }
-                />
+            <Menu shadow="md" width={200}>
+                <Menu.Target style={{
+                    position: "absolute",
+                    top: "12px",
+                    right: "12px"
+                }} >
+                    <Button variant="transparent">
+                        <IconDotsVertical size={18} />
+                    </Button>
+                </Menu.Target>
 
-                <Menu.Item
-                    color="red"
-                    leftSection={<IconTrash size={14} />}
-                >
-                    Eliminar
-                </Menu.Item>
-            </Menu.Dropdown>
-        </Menu>
+                <Menu.Dropdown>
+                    <Menu.Item
+                        leftSection={<IconPencilMinus size={14} />}
+                        onClick={open}
+                    >
+                        Editar
+                    </Menu.Item>
+
+                    <Menu.Item
+                        color="red"
+                        leftSection={<IconTrash size={14} />}
+                    >
+                        Eliminar
+                    </Menu.Item>
+                </Menu.Dropdown>
+            </Menu>
+        </>
     );
 }

@@ -1,15 +1,16 @@
 import { useDisclosure } from '@mantine/hooks';
 import { Modal, Button, TextInput, NumberInput, Select, Flex } from '@mantine/core';
-import { IconPlus } from '@tabler/icons-react';
 
-export function NewEditReceiptModal({ action, button }) {
-    const [opened, { open, close }] = useDisclosure(false);
+export function NewEditReceiptModal({ action, button, opened, onClose }) {
+    const [internalOpened, { open, close }] = useDisclosure(false);
+    const isOpened = opened ?? internalOpened;
+    const handleClose = onClose ?? close;
 
     return (
         <>
             <Modal
-                opened={opened}
-                onClose={close}
+                opened={isOpened}
+                onClose={handleClose}
                 title={action === "create" ? "Nuevo recibo" : "Editar recibo"}
                 centered
             >
@@ -39,7 +40,7 @@ export function NewEditReceiptModal({ action, button }) {
                 </form>
             </Modal>
 
-           {button(open)}
+           {button?.(open)}
         </>
     );
 }

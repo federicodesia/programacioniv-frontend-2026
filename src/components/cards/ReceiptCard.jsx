@@ -2,6 +2,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { Card, Image, Text, Badge, Button, Flex, Menu } from '@mantine/core';
 import { IconDotsVertical, IconPencilMinus, IconTrash } from '@tabler/icons-react';
 import { NewEditReceiptModal } from '../modals/NewEditReceiptModal';
+import { DeleteReceiptModal } from '../modals/DeleteReceiptModal';
 
 export function ReceiptCard() {
     return (
@@ -32,14 +33,20 @@ export function ReceiptCard() {
 }
 
 function ActionsMenu() {
-    const [opened, { open, close }] = useDisclosure(false);
+    const [editOpened, { open: openEdit, close: closeEdit }] = useDisclosure(false);
+    const [deleteOpened, { open: openDelete, close: closeDelete }] = useDisclosure(false);
 
     return (
         <>
-            <NewEditReceiptModal
+            <NewEditReceiptModal    
                 action="edit"
-                opened={opened}
-                onClose={close}
+                opened={editOpened}
+                onClose={closeEdit}
+            />
+
+            <DeleteReceiptModal
+                opened={deleteOpened}
+                onClose={closeDelete}
             />
 
             <Menu shadow="md" width={200}>
@@ -56,7 +63,7 @@ function ActionsMenu() {
                 <Menu.Dropdown>
                     <Menu.Item
                         leftSection={<IconPencilMinus size={14} />}
-                        onClick={open}
+                        onClick={openEdit}
                     >
                         Editar
                     </Menu.Item>
@@ -64,6 +71,7 @@ function ActionsMenu() {
                     <Menu.Item
                         color="red"
                         leftSection={<IconTrash size={14} />}
+                        onClick={openDelete}
                     >
                         Eliminar
                     </Menu.Item>

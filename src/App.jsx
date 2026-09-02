@@ -9,6 +9,9 @@ import { LoginPage } from "./pages/auth/LoginPage";
 import { RegisterPage } from "./pages/auth/RegisterPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { ReceiptsPage } from "./pages/ReceiptsPage";
+import { CategoriesPage } from "./pages/CategoriesPage";
+import { TagsPage } from "./pages/TagsPage";
+import { AppLayout } from "./pages/AppLayout";
 
 export default function App() {
 	return (
@@ -20,7 +23,11 @@ export default function App() {
 						<Route path="register" element={<RegisterPage />} />
 					</Route>
 
-					<Route path="/" element={<ReceiptsPage />} />
+					<Route element={<AppLayout />}>
+						<Route path="/" element={<ReceiptsPage />} />
+						<Route path="/categories" element={<CategoriesPage />} />
+						<Route path="/tags" element={<TagsPage />} />
+					</Route>
 
 					<Route path="*" element={<NotFoundPage />} />
 				</Routes>

@@ -48,7 +48,7 @@ function ActionsMenu() {
     return (
         <>
             <Menu shadow="md" width={200}>
-                {/* Botón que abre el menú */}
+                {/* Boton que abre el menu */}
                 <Menu.Target style={{
                     position: "absolute",
                     top: "12px",
@@ -59,7 +59,7 @@ function ActionsMenu() {
                     </Button>
                 </Menu.Target>
 
-                {/* Opciones del menú */}
+                {/* Opciones del menu */}
                 <Menu.Dropdown>
                     <Menu.Item
                         leftSection={<IconPencilMinus size={16} />}

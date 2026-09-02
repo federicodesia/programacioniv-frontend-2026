@@ -10,28 +10,11 @@ export function RegisterPage() {
 			>
 				<Title order={2}>Crear una cuenta</Title>
 
-				<TextInput
-					size="md"
-					radius="lg"
-					label="Correo electrónico"
-					type="email"
-				/>
+				<TextInput label="Correo electrónico" type="email" />
+				<PasswordInput label="Contraseña" />
+				<Button>Registrarme</Button>
 
-				<PasswordInput
-					size="md"
-					radius="lg"
-					label="Contraseña"
-				/>
-
-				<Button
-					size="md"
-					radius="lg"
-					variant="filled"
-				>
-					Registrarme
-				</Button>
-
-				<Text style={{ textAlign: "center" }}>
+				<Text size="sm" ta="center">
 					¿Ya tenés cuenta?{" "}
 					<Anchor
 						to="/auth/login"

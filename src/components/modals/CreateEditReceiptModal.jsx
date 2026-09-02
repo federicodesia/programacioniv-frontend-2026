@@ -1,20 +1,15 @@
-import { useDisclosure } from '@mantine/hooks';
-import { Modal, Button, TextInput, NumberInput, Select, Flex } from '@mantine/core';
+import { Modal, Button, TextInput, NumberInput, Select, Flex, MultiSelect } from '@mantine/core';
 
-export function NewEditReceiptModal({ action, button, opened, onClose }) {
-    const [internalOpened, { open, close }] = useDisclosure(false);
-    const isOpened = opened ?? internalOpened;
-    const handleClose = onClose ?? close;
-
+export function CreateEditReceiptModal({ disclosure, action }) {
     return (
-        <>
-            <Modal
-                opened={isOpened}
-                onClose={handleClose}
-                title={action === "create" ? "Nuevo recibo" : "Editar recibo"}
-                centered
-            >
-                <form>
+        <Modal
+            opened={disclosure.isOpen}
+            onClose={disclosure.close}
+            title={action === "create" ? "Nuevo recibo" : "Editar recibo"}
+            centered
+        >
+            <form>
+                <Flex direction="column" gap="6px">
                     <TextInput
                         label="Descripción"
                     />
@@ -30,6 +25,11 @@ export function NewEditReceiptModal({ action, button, opened, onClose }) {
                         data={['Impuestos', 'Servicios', 'Alquiler', 'Comida']}
                     />
 
+                    <MultiSelect
+                        label="Etiquetas"
+                        data={['Casa', 'Auto', 'Moto']}
+                    />
+
                     <Flex justify="end" mt="16px">
                         <Button
                             variant="filled"
@@ -37,10 +37,8 @@ export function NewEditReceiptModal({ action, button, opened, onClose }) {
                             {action === "create" ? "Crear" : "Guardar"}
                         </Button>
                     </Flex>
-                </form>
-            </Modal>
-
-           {button?.(open)}
-        </>
+                </Flex>
+            </form>
+        </Modal>
     );
 }

@@ -40,7 +40,7 @@ export function AuthLayout() {
                         gap="sm"
                     >
                         <IconReceiptFilled
-                            size={48}
+                            size={40}
                             style={{
                                 color: "#1c7ed6",
                                 backgroundColor: "white",
@@ -49,11 +49,11 @@ export function AuthLayout() {
                             }}
                         />
 
-                        <Title size="xl">Control de gastos</Title>
+                        <Title size="18px">Control de gastos</Title>
                     </Flex>
 
-                    <Title size="48px">Bienvenido</Title>
-                    <Text size="20px">Organizá tus recibos de manera rápida y sencilla</Text>
+                    <Title size="32px">Bienvenido</Title>
+                    <Text size="16px">Organizá tus recibos de manera rápida y sencilla</Text>
                 </Flex>
             </BackgroundImage>
         </SimpleGrid>

@@ -10,28 +10,11 @@ export function LoginPage() {
 			>
 				<Title order={2}>Ingresá a tu cuenta</Title>
 
-				<TextInput
-					size="md"
-					radius="lg"
-					label="Correo electrónico"
-					type="email"
-				/>
+				<TextInput label="Correo electrónico" type="email"/>
+				<PasswordInput label="Contraseña"/>
+				<Button>Iniciar sesión</Button>
 
-				<PasswordInput
-					size="md"
-					radius="lg"
-					label="Contraseña"
-				/>
-
-				<Button
-					size="md"
-					radius="lg"
-					variant="filled"
-				>
-					Iniciar sesión
-				</Button>
-
-				<Text style={{ textAlign: "center" }}>
+				<Text size="sm" ta="center">
 					¿No tenés cuenta?{" "}
 					<Anchor
 						to="/auth/register"

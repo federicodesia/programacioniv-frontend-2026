@@ -4,6 +4,10 @@ import { IconChevronDown, IconLogout, IconReceiptFilled, IconUserCircle } from "
 export function Header() {
     return (
         <header style={{
+            position: "sticky",
+            top: 0,
+            zIndex: 99,
+            backgroundColor: "#F8F8F8",
             boxShadow: "rgba(0, 0, 0, 0.1) 0px 1px 2px"
         }}>
             <Container style={{
@@ -11,7 +15,7 @@ export function Header() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                gap: "16px"
+                gap: "8px"
             }}>
                 <Flex gap="xs" align="center">
                     <IconReceiptFilled size={28} color="#1c7ed6" />
@@ -26,15 +30,16 @@ export function Header() {
 
 function UserMenu() {
     return (
-        <Menu width={250}>
+        <Menu width={200}>
             <Menu.Target>
                 <Button
                     variant="transparent"
                     color="dark"
+                    px={0}
                 >
                     <Flex align="center" gap="xs">
-                        <IconUserCircle size={24} stroke={1.5} />
-                        <Text size="md" fw={500}>usuario@gmail.com</Text>
+                        <IconUserCircle size={22} stroke={1.5} />
+                        <Text size="sm" fw={500}>usuario@gmail.com</Text>
                         <IconChevronDown size={16} />
                     </Flex>
                 </Button>

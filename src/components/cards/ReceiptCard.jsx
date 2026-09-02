@@ -1,82 +1,86 @@
-import { useDisclosure } from '@mantine/hooks';
 import { Card, Image, Text, Badge, Button, Flex, Menu } from '@mantine/core';
-import { IconDotsVertical, IconPencilMinus, IconTrash } from '@tabler/icons-react';
-import { NewEditReceiptModal } from '../modals/NewEditReceiptModal';
+import { IconDotsVertical, IconPencilMinus, IconReceipt, IconTrash } from '@tabler/icons-react';
+import { CreateEditReceiptModal } from '../modals/CreateEditReceiptModal';
 import { DeleteReceiptModal } from '../modals/DeleteReceiptModal';
+import { useModalDisclosure } from '../../hooks/useModalDisclosure'
 
 export function ReceiptCard() {
     return (
-        <Card shadow="sm" padding="lg" withBorder orientation="horizontal" style={{
-            position: "relative"
-        }}>
-            <Card.Section>
-                <Image
-                    src="https://img.elnueve.com.ar/sites/default/files/styles/1_91_1_max_1200px/public/2024-02/snap-3bd24087-bdac-43a2-a46b-111c2f01a1e6.jpg?h=c673cd1c&itok=bB7zmdRi"
-                    style={{
-                        width: "200px",
-                        height: "100%"
-                    }}
-                    alt="Norway"
-                />
-            </Card.Section>
+        <Card shadow="sm" p={0} withBorder orientation="horizontal">
+            <Image
+                src="https://img.elnueve.com.ar/sites/default/files/styles/1_91_1_max_1200px/public/2024-02/snap-3bd24087-bdac-43a2-a46b-111c2f01a1e6.jpg?h=c673cd1c&itok=bB7zmdRi"
+                style={{
+                    width: "165px",
+                    height: "100%",
+                    aspectRatio: 1 / 1
+                }}
+                alt="Recibo"
+            />
 
-            <Flex direction="column" p="24px" gap="4px" >
-                <Text size="sm" c="dimmed">27 ago 2026</Text>
+            <Flex w="100%" justify="space-between" align="center" p="24px">
+                <Flex direction="column" gap="10px">
+                    <Text size="sm" c="#888">27 ago 2026</Text>
+                    <Text size="md">Electricidad</Text>
+
+                    <Flex gap="6px">
+                        <IconReceipt size="20px" color="#333" />
+                        <Text size="sm">Servicios</Text>
+                    </Flex>
+
+                    <Flex gap="6px">
+                        <Badge>Servicios</Badge>
+                        <Badge>Servicios</Badge>
+                    </Flex>
+                </Flex>
+
                 <Text size="xl" fw={500}>$100.000</Text>
-                <Text size="sm" c="dimmed">Electricidad</Text>
-                <Badge>Servicios</Badge>
-
-                <ActionsMenu />
             </Flex>
+
+            <ActionsMenu />
         </Card>
     );
 }
 
 function ActionsMenu() {
-    const [editOpened, { open: openEdit, close: closeEdit }] = useDisclosure(false);
-    const [deleteOpened, { open: openDelete, close: closeDelete }] = useDisclosure(false);
+    const editDisclosure = useModalDisclosure();
+    const deleteDisclosure = useModalDisclosure();
 
     return (
         <>
-            <NewEditReceiptModal    
-                action="edit"
-                opened={editOpened}
-                onClose={closeEdit}
-            />
-
-            <DeleteReceiptModal
-                opened={deleteOpened}
-                onClose={closeDelete}
-            />
-
             <Menu shadow="md" width={200}>
+                {/* Botón que abre el menú */}
                 <Menu.Target style={{
                     position: "absolute",
                     top: "12px",
-                    right: "12px"
+                    right: "0px"
                 }} >
                     <Button variant="transparent">
                         <IconDotsVertical size={18} />
                     </Button>
                 </Menu.Target>
 
+                {/* Opciones del menú */}
                 <Menu.Dropdown>
                     <Menu.Item
-                        leftSection={<IconPencilMinus size={14} />}
-                        onClick={openEdit}
+                        leftSection={<IconPencilMinus size={16} />}
+                        onClick={editDisclosure.open}
                     >
                         Editar
                     </Menu.Item>
 
                     <Menu.Item
                         color="red"
-                        leftSection={<IconTrash size={14} />}
-                        onClick={openDelete}
+                        leftSection={<IconTrash size={16} />}
+                        onClick={deleteDisclosure.open}
                     >
                         Eliminar
                     </Menu.Item>
                 </Menu.Dropdown>
             </Menu>
+
+            {/* Modales */}
+            <CreateEditReceiptModal disclosure={editDisclosure} action="edit" />
+            <DeleteReceiptModal disclosure={deleteDisclosure} />
         </>
     );
 }

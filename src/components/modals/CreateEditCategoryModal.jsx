@@ -1,6 +1,8 @@
-import { useState } from 'react';
 import { Modal, Button, TextInput, Flex, SimpleGrid, Radio } from '@mantine/core';
 import { TablerIcon } from '../TablerIcon';
+import { Controller, useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CategorySchema } from '../../schemas/CategorySchema';
 
 const ICON_NAMES = [
     'IconCar', 'IconHome', 'IconShoppingCart', 'IconMeat', 'IconTools',
@@ -10,6 +12,15 @@ const ICON_NAMES = [
 ];
 
 export function CreateEditCategoryModal({ disclosure, action }) {
+    const form = useForm({
+        resolver: zodResolver(CategorySchema)
+    })
+
+    // Se ejecuta si todo está correcto
+    function onSubmit(data) {
+        console.log("Formulario validado! Datos:", data)
+    }
+
     return (
         <Modal
             opened={disclosure.isOpen}
@@ -17,11 +28,15 @@ export function CreateEditCategoryModal({ disclosure, action }) {
             title={action === "create" ? "Nueva categoría" : "Editar categoría"}
             centered
         >
-            <form>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
                 <Flex direction="column" gap="12px">
-                    <TextInput label="Nombre" />
+                    <TextInput
+                        label="Nombre"
+                        error={form.formState.errors.name?.message}
+                        {...form.register("name")}
+                    />
 
-                    <IconPicker />
+                    <IconPicker form={form} />
 
                     <Flex justify="end" mt="8px">
                         <Button type="submit" variant="filled">
@@ -34,40 +49,49 @@ export function CreateEditCategoryModal({ disclosure, action }) {
     );
 }
 
-function IconPicker() {
-    const [selected, setSelected] = useState("IconCategory");
-
+function IconPicker({ form }) {
     return (
-        <Radio.Group
-            label="Icono"
-            value={selected}
-            onChange={setSelected}
-        >
-            <SimpleGrid minColWidth="48px" spacing="xs">
-                {ICON_NAMES.map((iconName) => {
-                    const isSelected = iconName === selected
-                    return (
-                        <Radio.Card
-                            key={iconName}
-                            value={iconName}
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                height: "48px",
-                                width: "48px",
-                                border: isSelected ? "1px solid #228be6" : ""
-                            }}
-                        >
-                            <TablerIcon
-                                name={iconName}
-                                size={22}
-                                color={isSelected ? "#228be6" : "#333"}
-                            />
-                        </Radio.Card>
-                    )
-                })}
-            </SimpleGrid>
-        </Radio.Group>
+        <Controller
+            control={form.control}
+            name="iconName"
+            render={({ field, fieldState }) => (
+                <Radio.Group
+                    label="Icono"
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={fieldState.error?.message}
+                >
+                    <SimpleGrid minColWidth="48px" spacing="xs">
+                        {ICON_NAMES.map((iconName) => {
+                            const isSelected = iconName === field.value;
+
+                            return (
+                                <Radio.Card
+                                    key={iconName}
+                                    value={iconName}
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        height: "48px",
+                                        width: "48px",
+                                        border: isSelected
+                                            ? "1px solid #228be6"
+                                            : "1px solid #ddd",
+                                    }}
+                                >
+                                    <TablerIcon
+                                        name={iconName}
+                                        size={22}
+                                        color={isSelected ? "#228be6" : "#333"}
+                                    />
+                                </Radio.Card>
+                            );
+                        })}
+                    </SimpleGrid>
+                </Radio.Group>
+            )}
+        />
     );
 }
+

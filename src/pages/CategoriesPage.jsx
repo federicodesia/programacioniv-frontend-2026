@@ -38,7 +38,7 @@ export function CategoriesPage() {
                     </Button>
                 </Flex>
 
-                <SimpleGrid cols={{ base: 1, md: 3 }}>
+                <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }}>
                     {CATEGORIES.map((category) => (
                         <CategoryCard
                             key={category.id}

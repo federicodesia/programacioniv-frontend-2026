@@ -1,5 +1,6 @@
 
 import "@mantine/core/styles.css";
+import '@mantine/dates/styles.css';
 import "./index.css"
 
 import { BrowserRouter, Route, Routes } from "react-router";

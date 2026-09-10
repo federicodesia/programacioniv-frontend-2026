@@ -1,6 +1,6 @@
 import { Anchor, Button, Container, Flex, Menu, Text, Title } from "@mantine/core";
 import { IconChevronDown, IconLogout, IconReceiptFilled, IconUserCircle } from "@tabler/icons-react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 export function Header() {
     return (
@@ -64,6 +64,8 @@ function NavLinks({ links }) {
 }
 
 function UserMenu() {
+    const navigate = useNavigate()
+
     return (
         <Menu width={200}>
             <Menu.Target>
@@ -85,6 +87,10 @@ function UserMenu() {
                     leftSection={<IconLogout size={16} />}
                     color="red"
                     fw={500}
+                    onClick={() => {
+                        localStorage.removeItem("token");
+                        navigate("/auth/login")
+                    }}
                 >
                     Cerrar sesión
                 </Menu.Item>

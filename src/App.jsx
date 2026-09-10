@@ -13,26 +13,38 @@ import { ReceiptsPage } from "./pages/ReceiptsPage";
 import { CategoriesPage } from "./pages/CategoriesPage";
 import { TagsPage } from "./pages/TagsPage";
 import { AppLayout } from "./pages/AppLayout";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { PrivateRoute, PublicRoute } from "./pages/Routes";
+
+const queryClient = new QueryClient()
 
 export default function App() {
 	return (
-		<MantineProvider>
-			<BrowserRouter>
-				<Routes>
-					<Route path="/auth" element={<AuthLayout />}  >
-						<Route path="login" element={<LoginPage />} />
-						<Route path="register" element={<RegisterPage />} />
-					</Route>
+		<QueryClientProvider client={queryClient}>
+			<MantineProvider>
+				<BrowserRouter>
+					<Routes>
+						<Route element={<PublicRoute />} >
+							<Route path="/auth" element={<AuthLayout />}  >
+								<Route path="login" element={<LoginPage />} />
+								<Route path="register" element={<RegisterPage />} />
+							</Route>
+						</Route>
 
-					<Route element={<AppLayout />}>
-						<Route path="/" element={<ReceiptsPage />} />
-						<Route path="/categories" element={<CategoriesPage />} />
-						<Route path="/tags" element={<TagsPage />} />
-					</Route>
+						<Route element={<PrivateRoute />} >
+							<Route element={<AppLayout />}>
+								<Route path="/" element={<ReceiptsPage />} />
+								<Route path="/categories" element={<CategoriesPage />} />
+								<Route path="/tags" element={<TagsPage />} />
+							</Route>
+						</Route>
 
-					<Route path="*" element={<NotFoundPage />} />
-				</Routes>
-			</BrowserRouter>
-		</MantineProvider>
+						<Route path="*" element={<NotFoundPage />} />
+					</Routes>
+				</BrowserRouter>
+			</MantineProvider>
+		</QueryClientProvider>
+
+
 	);
 }

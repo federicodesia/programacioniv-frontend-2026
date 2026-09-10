@@ -1,17 +1,29 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Anchor, Text, TextInput, Title, PasswordInput, Button, Flex } from "@mantine/core";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { RegisterSchema } from "../../schemas/AuthSchemas";
+import { authService } from "../../services/authService";
+import { useMutation } from "@tanstack/react-query";
 
 export function RegisterPage() {
+	const navigate = useNavigate();
+
 	const form = useForm({
 		resolver: zodResolver(RegisterSchema)
 	});
 
+	const registerMutation = useMutation({
+		mutationFn: authService.register,
+		onSuccess: () => {
+			navigate("/auth/login")
+		}
+	})
+
 	// Se ejecuta si todo está correcto
 	function onSubmit(data) {
 		console.log("Formulario validado! Datos:", data)
+		registerMutation.mutate(data)
 	}
 
 	return (
@@ -35,7 +47,13 @@ export function RegisterPage() {
 					{...form.register("password")}
 				/>
 
-				<Button type="submit">
+				{
+					registerMutation.isError
+						? <Text c="red">Algo salió mal!</Text>
+						: null
+				}	
+
+				<Button type="submit" loading={registerMutation.isPending}>
 					Registrarme
 				</Button>
 

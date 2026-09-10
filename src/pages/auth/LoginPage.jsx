@@ -1,17 +1,31 @@
 import { Anchor, Text, TextInput, Title, PasswordInput, Button, Flex } from "@mantine/core";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { LoginSchema } from "../../schemas/AuthSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { authService } from "../../services/authService";
+import { useMutation } from "@tanstack/react-query";
 
 export function LoginPage() {
+	const navigate = useNavigate();
+
 	const form = useForm({
 		resolver: zodResolver(LoginSchema)
 	});
 
+	const loginMutation = useMutation({
+		mutationFn: authService.login,
+		onSuccess: (response) => {
+			const token = response.data.token;
+			localStorage.setItem("token", token);
+			navigate("/")
+		}
+	})
+
 	// Se ejecuta si todo está correcto
-	function onSubmit (data) {
+	function onSubmit(data) {
 		console.log("Formulario validado! Datos:", data)
+		loginMutation.mutate(data)
 	}
 
 	return (
@@ -35,7 +49,13 @@ export function LoginPage() {
 					{...form.register("password")}
 				/>
 
-				<Button type="submit">
+				{
+					loginMutation.isError
+						? <Text c="red">Algo salió mal!</Text>
+						: null
+				}
+
+				<Button type="submit" loading={loginMutation.isPending} >
 					Iniciar sesión
 				</Button>
 

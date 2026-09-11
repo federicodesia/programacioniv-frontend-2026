@@ -1,6 +1,18 @@
 import { Modal, Button, Flex, Text } from '@mantine/core';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { tagsService } from '../../services/tagsService';
 
-export function DeleteTagModal({ disclosure }) {
+export function DeleteTagModal({ disclosure, tag }) {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation({
+        mutationFn: tagsService.delete,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["tags"] }); // Hace refetch de tags
+            disclosure.close(); // Cierra el modal
+        }
+    })
+
     return (
         <Modal
             opened={disclosure.isOpen}
@@ -17,7 +29,8 @@ export function DeleteTagModal({ disclosure }) {
                 <Button
                     variant="filled"
                     color="red"
-                    onClick={disclosure.close}
+                    onClick={() => mutation.mutate(tag.id)}
+                    loading={mutation.isPending}
                 >
                     Eliminar
                 </Button>

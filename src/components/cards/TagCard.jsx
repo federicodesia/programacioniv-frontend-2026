@@ -1,6 +1,6 @@
 import { Text, Card, Menu, Flex, Button } from "@mantine/core";
 import { IconDotsVertical, IconPencilMinus, IconTag, IconTrash } from "@tabler/icons-react";
-import { CreateEditTagModal } from "../modals/CreateEditTagModal";
+import { CreateUpdateTagModal } from "../modals/CreateUpdateTagModal";
 import { DeleteTagModal } from "../modals/DeleteTagModal";
 import { useModalDisclosure } from "../../hooks/useModalDisclosure";
 
@@ -12,13 +12,13 @@ export function TagCard({ tag }) {
                     <IconTag size={22} color="#228be6" />
                     <Text size="md" fw={500}>{tag.name}</Text>
                 </Flex>
-                <ActionsMenu />
+                <ActionsMenu tag={tag} />
             </Flex>
         </Card>
     );
 }
 
-function ActionsMenu() {
+function ActionsMenu({ tag }) {
     const editDisclosure = useModalDisclosure();
     const deleteDisclosure = useModalDisclosure();
 
@@ -40,6 +40,7 @@ function ActionsMenu() {
                     >
                         Editar
                     </Menu.Item>
+
                     <Menu.Item
                         color="red"
                         leftSection={<IconTrash size={16} />}
@@ -51,11 +52,8 @@ function ActionsMenu() {
             </Menu>
 
             {/* Modales */}
-            <CreateEditTagModal
-                disclosure={editDisclosure}
-                action="edit"
-            />
-            <DeleteTagModal disclosure={deleteDisclosure} />
+            <CreateUpdateTagModal disclosure={editDisclosure} editTag={tag} />
+            <DeleteTagModal disclosure={deleteDisclosure} tag={tag} />
         </>
     );
 }

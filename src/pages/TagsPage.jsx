@@ -1,20 +1,18 @@
-import { Button, Flex, Title, TextInput, SimpleGrid } from "@mantine/core";
+import { Button, Flex, Title, TextInput, SimpleGrid, Loader, Center } from "@mantine/core";
 import { TagCard } from "../components/cards/TagCard";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
-import { CreateEditTagModal } from "../components/modals/CreateEditTagModal";
+import { CreateUpdateTagModal } from "../components/modals/CreateUpdateTagModal";
 import { useModalDisclosure } from "../hooks/useModalDisclosure";
-
-const TAGS = [
-    { id: 1, name: "Casa" },
-    { id: 2, name: "Auto" },
-    { id: 3, name: "Moto" },
-    { id: 4, name: "Viaje" },
-    { id: 5, name: "Trabajo" },
-    { id: 6, name: "Personal" },
-];
+import { useQuery } from "@tanstack/react-query";
+import { tagsService } from "../services/tagsService";
 
 export function TagsPage() {
     const createDisclosure = useModalDisclosure();
+
+    const query = useQuery({
+        queryKey: ["tags"],
+        queryFn: tagsService.getAll
+    })
 
     return (
         <>
@@ -38,17 +36,29 @@ export function TagsPage() {
                     </Button>
                 </Flex>
 
-                <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }}>
-                    {TAGS.map((tag) => (
-                        <TagCard
-                            key={tag.id}
-                            tag={tag}
-                        />
-                    ))}
-                </SimpleGrid>
+                {
+                    query.isPending
+                        ? <Center>
+                            <Loader type="dots" />
+                        </Center>
+                        : null
+                }
+
+                {
+                    query.isSuccess
+                        ? <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }}>
+                            {query.data.map((tag) => (
+                                <TagCard
+                                    key={tag.id}
+                                    tag={tag}
+                                />
+                            ))}
+                        </SimpleGrid>
+                        : null
+                }
             </Flex>
 
-            <CreateEditTagModal disclosure={createDisclosure} action="create" />
+            <CreateUpdateTagModal disclosure={createDisclosure} />
         </>
     );
 }

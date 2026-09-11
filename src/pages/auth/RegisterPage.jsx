@@ -13,21 +13,15 @@ export function RegisterPage() {
 		resolver: zodResolver(RegisterSchema)
 	});
 
-	const registerMutation = useMutation({
+	const mutation = useMutation({
 		mutationFn: authService.register,
 		onSuccess: () => {
 			navigate("/auth/login")
 		}
 	})
 
-	// Se ejecuta si todo está correcto
-	function onSubmit(data) {
-		console.log("Formulario validado! Datos:", data)
-		registerMutation.mutate(data)
-	}
-
 	return (
-		<form onSubmit={form.handleSubmit(onSubmit)}>
+		<form onSubmit={form.handleSubmit(mutation.mutate)}>
 			<Flex
 				direction="column"
 				gap="md"
@@ -48,12 +42,12 @@ export function RegisterPage() {
 				/>
 
 				{
-					registerMutation.isError
+					mutation.isError
 						? <Text c="red">Algo salió mal!</Text>
 						: null
-				}	
+				}
 
-				<Button type="submit" loading={registerMutation.isPending}>
+				<Button type="submit" loading={mutation.isPending}>
 					Registrarme
 				</Button>
 

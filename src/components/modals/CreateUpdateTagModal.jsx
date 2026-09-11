@@ -2,22 +2,43 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Modal, Button, TextInput, Flex } from '@mantine/core';
 import { useForm } from 'react-hook-form';
 import { TagSchema } from '../../schemas/TagSchema';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { tagsService } from '../../services/tagsService';
+import { useEffect } from 'react';
 
-export function CreateEditTagModal({ disclosure, action }) {
+export function CreateUpdateTagModal({ disclosure, editTag }) {
     const form = useForm({
         resolver: zodResolver(TagSchema)
     })
 
-    // Se ejecuta si todo está correcto
+    const queryClient = useQueryClient()
+
+    const mutation = useMutation({
+        mutationFn: editTag
+            ? tagsService.update
+            : tagsService.create,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["tags"] }); // Hace refetch de tags
+            disclosure.close(); // Cierra el modal
+        }
+    })
+
     function onSubmit(data) {
-        console.log("Formulario validado! Datos:", data)
+        if (editTag) mutation.mutate({ id: editTag.id, data });
+        else mutation.mutate(data)
     }
+
+    // Reinicia el formulario al abrir/cerrar el modal
+    useEffect(() => {
+        if (editTag) form.reset(editTag);
+        else form.reset();
+    }, [disclosure.isOpen, editTag])
 
     return (
         <Modal
             opened={disclosure.isOpen}
             onClose={disclosure.close}
-            title={action === "create" ? "Nueva etiqueta" : "Editar etiqueta"}
+            title={editTag ? "Editar etiqueta" : "Nueva etiqueta"}
             centered
         >
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -32,8 +53,9 @@ export function CreateEditTagModal({ disclosure, action }) {
                         <Button
                             type="submit"
                             variant="filled"
+                            loading={mutation.isPending}
                         >
-                            {action === "create" ? "Crear" : "Guardar"}
+                            {editTag ? "Guardar" : "Crear"}
                         </Button>
                     </Flex>
                 </Flex>

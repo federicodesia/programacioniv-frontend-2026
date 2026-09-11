@@ -13,23 +13,17 @@ export function LoginPage() {
 		resolver: zodResolver(LoginSchema)
 	});
 
-	const loginMutation = useMutation({
+	const mutation = useMutation({
 		mutationFn: authService.login,
-		onSuccess: (response) => {
-			const token = response.data.token;
+		onSuccess: (data) => {
+			const token = data.token;
 			localStorage.setItem("token", token);
 			navigate("/")
 		}
 	})
 
-	// Se ejecuta si todo está correcto
-	function onSubmit(data) {
-		console.log("Formulario validado! Datos:", data)
-		loginMutation.mutate(data)
-	}
-
 	return (
-		<form onSubmit={form.handleSubmit(onSubmit)}>
+		<form onSubmit={form.handleSubmit(mutation.mutate)}>
 			<Flex
 				direction="column"
 				gap="md"
@@ -50,12 +44,12 @@ export function LoginPage() {
 				/>
 
 				{
-					loginMutation.isError
+					mutation.isError
 						? <Text c="red">Algo salió mal!</Text>
 						: null
 				}
 
-				<Button type="submit" loading={loginMutation.isPending} >
+				<Button type="submit" loading={mutation.isPending} >
 					Iniciar sesión
 				</Button>
 

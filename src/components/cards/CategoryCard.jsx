@@ -1,7 +1,7 @@
 import { Text, Card, Menu, Flex, Button } from "@mantine/core";
 import { IconDotsVertical, IconPencilMinus, IconTrash } from "@tabler/icons-react";
 import { TablerIcon } from "../TablerIcon";
-import { CreateEditCategoryModal } from "../modals/CreateEditCategoryModal";
+import { CreateUpdateCategoryModal } from "../modals/CreateUpdateCategoryModal";
 import { DeleteCategoryModal } from "../modals/DeleteCategoryModal";
 import { useModalDisclosure } from "../../hooks/useModalDisclosure";
 
@@ -10,7 +10,7 @@ export function CategoryCard({ category }) {
         <Card shadow="sm" withBorder p="sm" pr={0}>
             <Flex align="center" justify="space-between">
                 <Flex align="center" gap="12px">
-                    <TablerIcon name={category.icon} size={22} color="#228be6" />
+                    <TablerIcon name={category.iconName} size={22} color="#228be6" />
                     <Text size="md" fw={500}>
                         {category.name}
                     </Text>
@@ -21,7 +21,7 @@ export function CategoryCard({ category }) {
     );
 }
 
-function ActionsMenu() {
+function ActionsMenu({ category }) {
     const editDisclosure = useModalDisclosure();
     const deleteDisclosure = useModalDisclosure();
 
@@ -54,8 +54,8 @@ function ActionsMenu() {
             </Menu>
 
             {/* Modales */}
-            <CreateEditCategoryModal disclosure={editDisclosure} action="edit"/>
-            <DeleteCategoryModal disclosure={deleteDisclosure} />
+            <CreateUpdateCategoryModal disclosure={editDisclosure} editCategory={category} />
+            <DeleteCategoryModal disclosure={deleteDisclosure} category={category} />
         </>
     );
 }

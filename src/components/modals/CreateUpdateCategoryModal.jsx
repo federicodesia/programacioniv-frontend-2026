@@ -3,6 +3,9 @@ import { TablerIcon } from '../TablerIcon';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CategorySchema } from '../../schemas/CategorySchema';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { categoriesService } from '../../services/categoriesService';
+import { useEffect } from 'react';
 
 const ICON_NAMES = [
     'IconCar', 'IconHome', 'IconShoppingCart', 'IconMeat', 'IconTools',
@@ -11,21 +14,39 @@ const ICON_NAMES = [
     'IconCategory', 'IconTag', 'IconWallet', 'IconCreditCard', 'IconCoins',
 ];
 
-export function CreateEditCategoryModal({ disclosure, action }) {
+export function CreateUpdateCategoryModal({ disclosure, editCategory }) {
     const form = useForm({
         resolver: zodResolver(CategorySchema)
     })
 
-    // Se ejecuta si todo está correcto
+    const queryClient = useQueryClient()
+
+    const mutation = useMutation({
+        mutationFn: editCategory
+            ? categoriesService.update
+            : categoriesService.create,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["categories"] }); // Hace refetch de categories
+            disclosure.close(); // Cierra el modal
+        }
+    })
+
     function onSubmit(data) {
-        console.log("Formulario validado! Datos:", data)
+        if (editCategory) mutation.mutate({ id: editCategory.id, data });
+        else mutation.mutate(data)
     }
+
+    // Reinicia el formulario al abrir/cerrar el modal
+    useEffect(() => {
+        if (editCategory) form.reset(editCategory);
+        else form.reset();
+    }, [disclosure.isOpen, editCategory])
 
     return (
         <Modal
             opened={disclosure.isOpen}
             onClose={disclosure.close}
-            title={action === "create" ? "Nueva categoría" : "Editar categoría"}
+            title={editCategory ? "Editar categoría" : "Nueva categoría"}
             centered
         >
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -39,8 +60,12 @@ export function CreateEditCategoryModal({ disclosure, action }) {
                     <IconPicker form={form} />
 
                     <Flex justify="end" mt="8px">
-                        <Button type="submit" variant="filled">
-                            {action === "create" ? "Crear" : "Guardar"}
+                        <Button
+                            type="submit"
+                            variant="filled"
+                            loading={mutation.isPending}
+                        >
+                            {editCategory ? "Guardar" : "Crear"}
                         </Button>
                     </Flex>
                 </Flex>

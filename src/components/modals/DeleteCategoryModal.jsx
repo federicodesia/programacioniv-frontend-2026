@@ -1,6 +1,18 @@
 import { Modal, Button, Flex, Text } from '@mantine/core';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { categoriesService } from '../../services/categoriesService';
 
-export function DeleteCategoryModal({ disclosure }) {
+export function DeleteCategoryModal({ disclosure, category }) {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation({
+        mutationFn: categoriesService.delete,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["categories"] }); // Hace refetch de categories
+            disclosure.close(); // Cierra el modal
+        }
+    })
+
     return (
         <Modal
             opened={disclosure.isOpen}
@@ -17,7 +29,8 @@ export function DeleteCategoryModal({ disclosure }) {
                 <Button
                     variant="filled"
                     color="red"
-                    onClick={disclosure.close}
+                    onClick={() => mutation.mutate(category.id)}
+                    loading={mutation.isPending}
                 >
                     Eliminar
                 </Button>

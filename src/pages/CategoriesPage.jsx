@@ -1,20 +1,18 @@
-import { Button, Flex, Title, TextInput, SimpleGrid } from "@mantine/core";
+import { Button, Flex, Title, TextInput, SimpleGrid, Center, Loader } from "@mantine/core";
 import { CategoryCard } from "../components/cards/CategoryCard";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
-import { CreateEditCategoryModal } from "../components/modals/CreateEditCategoryModal";
+import { CreateUpdateCategoryModal } from "../components/modals/CreateUpdateCategoryModal";
 import { useModalDisclosure } from "../hooks/useModalDisclosure";
-
-const CATEGORIES = [
-    { id: 1, name: "Servicios", icon: "IconBolt" },
-    { id: 2, name: "Casa", icon: "IconHome" },
-    { id: 3, name: "Comida", icon: "IconMeat" },
-    { id: 4, name: "Auto", icon: "IconCar" },
-    { id: 5, name: "Salud", icon: "IconHealthRecognition" },
-    { id: 6, name: "Mascotas", icon: "IconPaw" },
-];
+import { useQuery } from "@tanstack/react-query";
+import { categoriesService } from "../services/categoriesService";
 
 export function CategoriesPage() {
     const createDisclosure = useModalDisclosure();
+
+    const query = useQuery({
+        queryKey: ["categories"],
+        queryFn: categoriesService.getAll
+    })
 
     return (
         <>
@@ -38,17 +36,29 @@ export function CategoriesPage() {
                     </Button>
                 </Flex>
 
-                <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }}>
-                    {CATEGORIES.map((category) => (
-                        <CategoryCard
-                            key={category.id}
-                            category={category}
-                        />
-                    ))}
-                </SimpleGrid>
+                {
+                    query.isPending
+                        ? <Center>
+                            <Loader type="dots" />
+                        </Center>
+                        : null
+                }
+
+                {
+                    query.isSuccess
+                        ? <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }}>
+                            {query.data.map((category) => (
+                                <CategoryCard
+                                    key={category.id}
+                                    category={category}
+                                />
+                            ))}
+                        </SimpleGrid>
+                        : null
+                }
             </Flex>
 
-            <CreateEditCategoryModal disclosure={createDisclosure} action="create" />
+            <CreateUpdateCategoryModal disclosure={createDisclosure} />
         </>
     );
 }

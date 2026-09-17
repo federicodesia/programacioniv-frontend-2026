@@ -3,9 +3,16 @@ import { IconPlus, IconSearch } from '@tabler/icons-react';
 import { CreateEditReceiptModal } from "../components/modals/CreateEditReceiptModal";
 import { ReceiptCard } from "../components/cards/ReceiptCard";
 import { useModalDisclosure } from "../hooks/useModalDisclosure";
+import { useQuery } from "@tanstack/react-query";
+import { receiptsService } from "../services/receiptsService";
 
 export function ReceiptsPage() {
     const createReceiptDisclosure = useModalDisclosure();
+
+    const query = useQuery({
+        queryFn: receiptsService.getAll,
+        queryKey: ["receipts"]
+    })
 
     return (
         <>
@@ -42,9 +49,11 @@ export function ReceiptsPage() {
                 </Flex>
 
                 <Flex direction="column" gap="16px">
-                    <ReceiptCard />
-                    <ReceiptCard />
-                    <ReceiptCard />
+                    {
+                        query.isSuccess
+                            ? query.data.map((receipt) => <ReceiptCard receipt={receipt} />)
+                            : null
+                    }
                 </Flex>
             </Flex>
 

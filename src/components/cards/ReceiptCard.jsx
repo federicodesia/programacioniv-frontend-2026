@@ -4,7 +4,7 @@ import { CreateEditReceiptModal } from '../modals/CreateEditReceiptModal';
 import { DeleteReceiptModal } from '../modals/DeleteReceiptModal';
 import { useModalDisclosure } from '../../hooks/useModalDisclosure'
 
-export function ReceiptCard() {
+export function ReceiptCard({ receipt }) {
     return (
         <Card shadow="sm" p={0} withBorder orientation="horizontal">
             <Image
@@ -19,21 +19,22 @@ export function ReceiptCard() {
 
             <Flex w="100%" justify="space-between" align="center" p="24px">
                 <Flex direction="column" gap="10px">
-                    <Text size="sm" c="#888">27 ago 2026</Text>
-                    <Text size="md">Electricidad</Text>
+                    <Text size="sm" c="#888">{receipt.date}</Text>
+                    <Text size="md">{receipt.description}</Text>
 
                     <Flex gap="6px">
                         <IconReceipt size="20px" color="#333" />
-                        <Text size="sm">Servicios</Text>
+                        <Text size="sm">{receipt.categoryName}</Text>
                     </Flex>
 
                     <Flex gap="6px">
-                        <Badge>Servicios</Badge>
-                        <Badge>Servicios</Badge>
+                        {
+                            receipt.tagNames.map((tagName) => <Badge>{tagName}</Badge>)
+                        }
                     </Flex>
                 </Flex>
 
-                <Text size="xl" fw={500}>$100.000</Text>
+                <Text size="xl" fw={500}>${receipt.amount}</Text>
             </Flex>
 
             <ActionsMenu />

@@ -1,20 +1,23 @@
 import { z } from "zod";
 
 export const ReceiptSchema = z.object({
+	file: z
+		.file("Por favor, subir una imagen")
+		.max(50 * 1000 * 1000, "Debe ser como máximo 50MB")
+		.mime(["image/png", "image/jpeg"], "Debe ser formato .PNG o .JPG"),
+
 	amount: z.coerce
-        .number("Ingresa el monto")
-        .positive("Debe ser un número positivo"),
+		.number("Ingresa el monto")
+		.positive("Debe ser un número positivo"),
 
 	description: z
 		.string("Ingresa la descripción")
 		.min(4, "Debe tener mínimo 4 caracteres")
 		.max(64, "Debe tener máximo 64 caracteres"),
 
-	date: z
-		.string("Selecciona la fecha")	
-		.date("Ingresa una fecha válida"),
+	date: z.string("Selecciona la fecha").date("Ingresa una fecha válida"),
 
-	categoryId: z.coerce	
+	categoryId: z.coerce
 		.number("Selecciona una categoría")
 		.int("Selecciona una categoría")
 		.positive("Selecciona una categoría"),
@@ -23,6 +26,6 @@ export const ReceiptSchema = z.object({
 		.number("Selecciona las etiquetas")
 		.int("Selecciona las etiquetas")
 		.positive("Selecciona las etiquetas")
-        .array()
-		.max(3, "Debe tener como máximo 3 etiquetas")
+		.array()
+		.max(3, "Debe tener como máximo 3 etiquetas"),
 });

@@ -1,8 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Modal, Button, TextInput, NumberInput, Select, Flex, MultiSelect } from '@mantine/core';
+import { Modal, Button, TextInput, NumberInput, Select, Flex, MultiSelect, FileInput } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { Controller, useForm } from 'react-hook-form';
 import { ReceiptSchema } from '../../schemas/ReceiptSchema'
+import { IconPhoto } from '@tabler/icons-react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { receiptsService } from '../../services/receiptsService';
+import { categoriesService } from '../../services/categoriesService';
+import { tagsService } from '../../services/tagsService';
 
 export function CreateEditReceiptModal({ disclosure, action }) {
     const form = useForm({
@@ -12,9 +17,25 @@ export function CreateEditReceiptModal({ disclosure, action }) {
         }
     })
 
-    function onSubmit(data) {
-        console.log("Formulario validado! Datos:", data)
-    }
+    const categoriesQuery = useQuery({
+        queryFn: categoriesService.getAll,
+        queryKey: ["categories"]
+    })
+
+    const tagsQuery = useQuery({
+        queryFn: tagsService.getAll,
+        queryKey: ["tags"]
+    })
+
+    const queryClient = useQueryClient()
+
+    const mutation = useMutation({
+        mutationFn: receiptsService.create,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["receipts"] }); // Hace refetch de recibos
+            disclosure.close(); // Cierra el modal
+        }
+    })
 
     return (
         <Modal
@@ -23,7 +44,7 @@ export function CreateEditReceiptModal({ disclosure, action }) {
             title={action === "create" ? "Nuevo recibo" : "Editar recibo"}
             centered
         >
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form onSubmit={form.handleSubmit(mutation.mutate)}>
                 <Flex direction="column" gap="6px">
                     <Controller
                         name="amount"
@@ -65,12 +86,14 @@ export function CreateEditReceiptModal({ disclosure, action }) {
                         render={({ field, fieldState }) => (
                             <Select
                                 label="Categoría"
-                                data={[
-                                    { value: "1", label: "Impuestos" },
-                                    { value: "2", label: "Servicios" },
-                                    { value: "3", label: "Alquiler" },
-                                    { value: "4", label: "Comida" },
-                                ]}
+                                data={
+                                    categoriesQuery.isSuccess
+                                        ? categoriesQuery.data.map((category) => ({
+                                            value: category.id,
+                                            label: category.name
+                                        }))
+                                        : []
+                                }
                                 value={field.value ?? null}
                                 onChange={field.onChange}
                                 error={fieldState.error?.message}
@@ -84,14 +107,34 @@ export function CreateEditReceiptModal({ disclosure, action }) {
                         render={({ field, fieldState }) => (
                             <MultiSelect
                                 label="Etiquetas"
-                                data={[
-                                    { value: "1", label: "Casa" },
-                                    { value: "2", label: "Auto" },
-                                    { value: "3", label: "Moto" },
-                                ]}
+                                data={
+                                    tagsQuery.isSuccess
+                                        ? tagsQuery.data.map((tag) => ({
+                                            value: tag.id,
+                                            label: tag.name
+                                        }))
+                                        : []
+                                }
                                 value={field.value ?? []}
                                 onChange={field.onChange}
                                 error={fieldState.error?.message}
+                            />
+                        )}
+                    />
+
+                    <Controller
+                        name="file"
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                            <FileInput
+                                leftSection={<IconPhoto size={16} />}
+                                leftSectionPointerEvents="none"
+                                label="Subir imagen"
+                                placeholder="Seleccionar archivo"
+                                accept="image/png, image/jpeg"
+                                error={form.formState.errors.file?.message}
+                                onChange={field.onChange}
+                                value={field.value}
                             />
                         )}
                     />

@@ -1,18 +1,29 @@
-import { Button, Flex, Select, TextInput, Title } from "@mantine/core";
+import { Button, Center, Flex, Loader, Select, TextInput, Title } from "@mantine/core";
 import { IconPlus, IconSearch } from '@tabler/icons-react';
 import { CreateEditReceiptModal } from "../components/modals/CreateEditReceiptModal";
 import { ReceiptCard } from "../components/cards/ReceiptCard";
 import { useModalDisclosure } from "../hooks/useModalDisclosure";
 import { useQuery } from "@tanstack/react-query";
 import { receiptsService } from "../services/receiptsService";
-import { useEffect } from "react";
+import { categoriesService } from "../services/categoriesService";
+import { tagsService } from "../services/tagsService";
 
 export function ReceiptsPage() {
     const createReceiptDisclosure = useModalDisclosure();
 
-    const query = useQuery({
+    const receiptsQuery = useQuery({
         queryFn: receiptsService.getAll,
         queryKey: ["receipts"]
+    })
+
+    const categoriesQuery = useQuery({
+        queryKey: ["categories"],
+        queryFn: categoriesService.getAll
+    })
+
+    const tagsQuery = useQuery({
+        queryKey: ["tags"],
+        queryFn: tagsService.getAll
     })
 
     return (
@@ -31,12 +42,14 @@ export function ReceiptsPage() {
 
                         <Select
                             placeholder="Categoría"
-                            data={['Impuestos', 'Servicios', 'Alquiler', 'Comida']}
+                            data={categoriesQuery.data?.map(category => category.name)}
+                            loading={categoriesQuery.isLoading}
                         />
 
                         <Select
                             placeholder="Etiqueta"
-                            data={['Casa', 'Auto', 'Moto']}
+                            data={tagsQuery.data?.map(tag => tag.name)}
+                            loading={tagsQuery.isLoading}
                         />
                     </Flex>
 
@@ -49,16 +62,28 @@ export function ReceiptsPage() {
                     </Button>
                 </Flex>
 
-                <Flex direction="column" gap="16px">
-                    {
-                        query.isSuccess
-                            ? query.data.map((receipt) => <ReceiptCard receipt={receipt} />)
-                            : null
-                    }
-                </Flex>
+                {
+                    receiptsQuery.isPending
+                        ? <Center>
+                            <Loader type="dots" />
+                        </Center>
+                        : null
+                }
+
+                {
+                    receiptsQuery.isSuccess
+                        ? <Flex direction="column" gap="16px">
+                            {
+                                receiptsQuery.data.map((receipt) => (
+                                    <ReceiptCard receipt={receipt} />
+                                ))
+                            }
+                        </Flex>
+                        : null
+                }
             </Flex>
 
-            <CreateEditReceiptModal disclosure={createReceiptDisclosure} action="create" />
+            <CreateEditReceiptModal disclosure={createReceiptDisclosure} />
         </>
     )
 }

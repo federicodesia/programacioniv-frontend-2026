@@ -6,7 +6,7 @@ import { useModalDisclosure } from "../../hooks/useModalDisclosure";
 
 export function TagCard({ tag }) {
     return (
-        <Card shadow="sm" withBorder p="sm" pr={0}>
+        <Card shadow="sm" withBorder p="sm" pl="md" pr={0}>
             <Flex align="center" justify="space-between">
                 <Flex align="center" gap="12px">
                     <IconTag size={22} color="#228be6" />

@@ -1,9 +1,9 @@
 import { Card, Text, Badge, Button, Flex, Menu } from '@mantine/core';
-import { IconDotsVertical, IconPencilMinus, IconPhoto, IconReceipt, IconTrash } from '@tabler/icons-react';
+import { IconDotsVertical, IconPencilMinus, IconPhoto, IconReceipt, IconTag, IconTrash } from '@tabler/icons-react';
 import { CreateEditReceiptModal } from '../modals/CreateEditReceiptModal';
 import { DeleteReceiptModal } from '../modals/DeleteReceiptModal';
 import { useModalDisclosure } from '../../hooks/useModalDisclosure'
-import { ReceiptPhotoModal } from '../modals/ReceiptPhotoModal';
+import { ReceiptImageModal } from '../modals/ReceiptImageModal';
 
 export function ReceiptCard({ receipt }) {
     return (
@@ -13,16 +13,23 @@ export function ReceiptCard({ receipt }) {
                     <Text size="sm" c="#888">{receipt.date}</Text>
                     <Text size="md">{receipt.description}</Text>
 
-                    <Flex gap="6px">
+                    <Flex gap="8px" align="center">
                         <IconReceipt size="20px" color="#333" />
                         <Text size="sm">{receipt.categoryName}</Text>
                     </Flex>
 
-                    <Flex gap="6px">
-                        {
-                            receipt.tagNames.map((tagName) => <Badge>{tagName}</Badge>)
-                        }
-                    </Flex>
+                    {
+                        receipt.tagNames.length > 0
+                            ? <Flex gap="8px" align="center">
+                                <IconTag size="20px" color="#333" />
+                                {
+                                    receipt.tagNames.map((tagName) => (
+                                        <Badge>{tagName}</Badge>
+                                    ))
+                                }
+                            </Flex>
+                            : null
+                    }
                 </Flex>
 
                 <Text size="xl" fw={500}>${receipt.amount}</Text>
@@ -33,7 +40,7 @@ export function ReceiptCard({ receipt }) {
     );
 }
 
-function ActionsMenu({receipt}) {
+function ActionsMenu({ receipt }) {
     const editDisclosure = useModalDisclosure();
     const deleteDisclosure = useModalDisclosure();
     const photoDisclosure = useModalDisclosure();
@@ -79,8 +86,8 @@ function ActionsMenu({receipt}) {
             </Menu>
 
             {/* Modales */}
-            <ReceiptPhotoModal disclosure={photoDisclosure} receipt={receipt} />
-            <CreateEditReceiptModal disclosure={editDisclosure} action="edit" />
+            <ReceiptImageModal disclosure={photoDisclosure} receipt={receipt} />
+            <CreateEditReceiptModal disclosure={editDisclosure} />
             <DeleteReceiptModal disclosure={deleteDisclosure} />
         </>
     );

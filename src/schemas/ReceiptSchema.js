@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const ReceiptSchema = z.object({
 	file: z
-		.file("Por favor, subir una imagen")
-		.max(50 * 1000 * 1000, "Debe ser como máximo 50MB")
+		.file("Selecciona una imagen")
+		.max(10 * 1000 * 1000, "Debe pesar como máximo 10MB")
 		.mime(["image/png", "image/jpeg"], "Debe ser formato .PNG o .JPG"),
 
 	amount: z.coerce

@@ -47,12 +47,14 @@ export function TagsPage() {
                 {
                     query.isSuccess
                         ? <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }}>
-                            {query.data.map((tag) => (
-                                <TagCard
-                                    key={tag.id}
-                                    tag={tag}
-                                />
-                            ))}
+                            {
+                                query.data.map((tag) => (
+                                    <TagCard
+                                        key={tag.id}
+                                        tag={tag}
+                                    />
+                                ))
+                            }
                         </SimpleGrid>
                         : null
                 }

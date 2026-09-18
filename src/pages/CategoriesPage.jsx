@@ -47,12 +47,14 @@ export function CategoriesPage() {
                 {
                     query.isSuccess
                         ? <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }}>
-                            {query.data.map((category) => (
-                                <CategoryCard
-                                    key={category.id}
-                                    category={category}
-                                />
-                            ))}
+                            {
+                                query.data.map((category) => (
+                                    <CategoryCard
+                                        key={category.id}
+                                        category={category}
+                                    />
+                                ))
+                            }
                         </SimpleGrid>
                         : null
                 }

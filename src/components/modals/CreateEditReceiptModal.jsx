@@ -10,7 +10,7 @@ import { categoriesService } from '../../services/categoriesService';
 import { tagsService } from '../../services/tagsService';
 import { useEffect } from 'react';
 
-export function CreateEditReceiptModal({ disclosure, action }) {
+export function CreateEditReceiptModal({ disclosure, editReceipt }) {
     const form = useForm({
         resolver: zodResolver(ReceiptSchema),
         defaultValues: {
@@ -46,7 +46,7 @@ export function CreateEditReceiptModal({ disclosure, action }) {
         <Modal
             opened={disclosure.isOpen}
             onClose={disclosure.close}
-            title={action === "create" ? "Nuevo recibo" : "Editar recibo"}
+            title={editReceipt ? "Editar recibo" : "Nuevo recibo"}
             centered
         >
             <form onSubmit={form.handleSubmit(mutation.mutate)}>
@@ -91,14 +91,11 @@ export function CreateEditReceiptModal({ disclosure, action }) {
                         render={({ field, fieldState }) => (
                             <Select
                                 label="Categoría"
-                                data={
-                                    categoriesQuery.isSuccess
-                                        ? categoriesQuery.data.map((category) => ({
-                                            value: category.id,
-                                            label: category.name
-                                        }))
-                                        : []
-                                }
+                                data={categoriesQuery.data?.map((category) => ({
+                                    value: category.id,
+                                    label: category.name
+                                }))}
+                                loading={categoriesQuery.isLoading}
                                 value={field.value ?? null}
                                 onChange={field.onChange}
                                 error={fieldState.error?.message}
@@ -112,14 +109,11 @@ export function CreateEditReceiptModal({ disclosure, action }) {
                         render={({ field, fieldState }) => (
                             <MultiSelect
                                 label="Etiquetas"
-                                data={
-                                    tagsQuery.isSuccess
-                                        ? tagsQuery.data.map((tag) => ({
-                                            value: tag.id,
-                                            label: tag.name
-                                        }))
-                                        : []
-                                }
+                                data={tagsQuery.data?.map((tag) => ({
+                                    value: tag.id,
+                                    label: tag.name
+                                }))}
+                                loading={tagsQuery.isLoading}
                                 value={field.value ?? []}
                                 onChange={field.onChange}
                                 error={fieldState.error?.message}
@@ -146,7 +140,7 @@ export function CreateEditReceiptModal({ disclosure, action }) {
 
                     <Flex justify="end" mt="16px">
                         <Button type="submit" variant="filled">
-                            {action === "create" ? "Crear" : "Guardar"}
+                            {editReceipt ? "Guardar" : "Crear"}
                         </Button>
                     </Flex>
                 </Flex>

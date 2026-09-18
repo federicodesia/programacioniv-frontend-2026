@@ -5,6 +5,7 @@ import { ReceiptCard } from "../components/cards/ReceiptCard";
 import { useModalDisclosure } from "../hooks/useModalDisclosure";
 import { useQuery } from "@tanstack/react-query";
 import { receiptsService } from "../services/receiptsService";
+import { useEffect } from "react";
 
 export function ReceiptsPage() {
     const createReceiptDisclosure = useModalDisclosure();

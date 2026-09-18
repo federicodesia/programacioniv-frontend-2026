@@ -1,22 +1,13 @@
-import { Card, Image, Text, Badge, Button, Flex, Menu } from '@mantine/core';
-import { IconDotsVertical, IconPencilMinus, IconReceipt, IconTrash } from '@tabler/icons-react';
+import { Card, Text, Badge, Button, Flex, Menu } from '@mantine/core';
+import { IconDotsVertical, IconPencilMinus, IconPhoto, IconReceipt, IconTrash } from '@tabler/icons-react';
 import { CreateEditReceiptModal } from '../modals/CreateEditReceiptModal';
 import { DeleteReceiptModal } from '../modals/DeleteReceiptModal';
 import { useModalDisclosure } from '../../hooks/useModalDisclosure'
+import { ReceiptPhotoModal } from '../modals/ReceiptPhotoModal';
 
 export function ReceiptCard({ receipt }) {
     return (
         <Card shadow="sm" p={0} withBorder orientation="horizontal">
-            <Image
-                src="https://img.elnueve.com.ar/sites/default/files/styles/1_91_1_max_1200px/public/2024-02/snap-3bd24087-bdac-43a2-a46b-111c2f01a1e6.jpg?h=c673cd1c&itok=bB7zmdRi"
-                style={{
-                    width: "165px",
-                    height: "100%",
-                    aspectRatio: 1 / 1
-                }}
-                alt="Recibo"
-            />
-
             <Flex w="100%" justify="space-between" align="center" p="24px">
                 <Flex direction="column" gap="10px">
                     <Text size="sm" c="#888">{receipt.date}</Text>
@@ -37,14 +28,15 @@ export function ReceiptCard({ receipt }) {
                 <Text size="xl" fw={500}>${receipt.amount}</Text>
             </Flex>
 
-            <ActionsMenu />
+            <ActionsMenu receipt={receipt} />
         </Card>
     );
 }
 
-function ActionsMenu() {
+function ActionsMenu({receipt}) {
     const editDisclosure = useModalDisclosure();
     const deleteDisclosure = useModalDisclosure();
+    const photoDisclosure = useModalDisclosure();
 
     return (
         <>
@@ -63,6 +55,13 @@ function ActionsMenu() {
                 {/* Opciones del menu */}
                 <Menu.Dropdown>
                     <Menu.Item
+                        leftSection={<IconPhoto size={16} />}
+                        onClick={photoDisclosure.open}
+                    >
+                        Ver recibo
+                    </Menu.Item>
+
+                    <Menu.Item
                         leftSection={<IconPencilMinus size={16} />}
                         onClick={editDisclosure.open}
                     >
@@ -80,6 +79,7 @@ function ActionsMenu() {
             </Menu>
 
             {/* Modales */}
+            <ReceiptPhotoModal disclosure={photoDisclosure} receipt={receipt} />
             <CreateEditReceiptModal disclosure={editDisclosure} action="edit" />
             <DeleteReceiptModal disclosure={deleteDisclosure} />
         </>

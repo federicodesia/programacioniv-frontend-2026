@@ -8,6 +8,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { receiptsService } from '../../services/receiptsService';
 import { categoriesService } from '../../services/categoriesService';
 import { tagsService } from '../../services/tagsService';
+import { useEffect } from 'react';
 
 export function CreateEditReceiptModal({ disclosure, action }) {
     const form = useForm({
@@ -36,6 +37,10 @@ export function CreateEditReceiptModal({ disclosure, action }) {
             disclosure.close(); // Cierra el modal
         }
     })
+
+    useEffect(() => {
+        form.reset(); // Vaciar el formulario
+    }, [disclosure.isOpen])
 
     return (
         <Modal
